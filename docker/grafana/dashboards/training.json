@@ -1,0 +1,105 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "title": "Training Reward (Eval)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "dist_rl_trainer_reward_sum / dist_rl_trainer_reward_count",
+          "legendFormat": "mean reward"
+        }
+      ]
+    },
+    {
+      "title": "Rollout Throughput (traj/s)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "rate(dist_rl_rollout_throughput_total[1m])",
+          "legendFormat": "trajectories/sec"
+        }
+      ]
+    },
+    {
+      "title": "Trainer Step Duration",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "dist_rl_trainer_step_duration_sum / dist_rl_trainer_step_duration_count",
+          "legendFormat": "avg step time (s)"
+        }
+      ]
+    },
+    {
+      "title": "Active Workers",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "dist_rl_worker_active_count",
+          "legendFormat": "active"
+        }
+      ]
+    },
+    {
+      "title": "Worker Failures",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 8 },
+      "targets": [
+        {
+          "expr": "dist_rl_worker_failure_count_total",
+          "legendFormat": "total failures"
+        }
+      ]
+    },
+    {
+      "title": "Buffer Depth",
+      "type": "gauge",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 12 },
+      "targets": [
+        {
+          "expr": "dist_rl_buffer_depth",
+          "legendFormat": "transitions"
+        }
+      ]
+    },
+    {
+      "title": "KL Divergence",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "expr": "dist_rl_trainer_kl_divergence_sum / dist_rl_trainer_kl_divergence_count",
+          "legendFormat": "approx KL"
+        }
+      ]
+    },
+    {
+      "title": "Checkpoint Duration",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "targets": [
+        {
+          "expr": "dist_rl_checkpoint_duration_sum / dist_rl_checkpoint_duration_count",
+          "legendFormat": "save time (s)"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 38,
+  "tags": ["rl", "training", "distributed"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "title": "Distributed RL Training Dashboard",
+  "uid": "dist-rl-training"
+}

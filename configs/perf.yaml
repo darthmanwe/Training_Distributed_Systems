@@ -1,0 +1,13 @@
+seed: 42
+
+trainer:
+  total_timesteps: 100000
+
+perf:
+  compile: true
+  mixed_precision: true
+  profile: true
+  profile_steps: 5
+
+churn:
+  enabled: false

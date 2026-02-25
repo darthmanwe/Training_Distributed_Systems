@@ -1,0 +1,31 @@
+seed: 42
+
+workers:
+  num_workers: 5
+  rollout_steps: 256
+  heterogeneous: true
+  profiles:
+    - speed_factor: 1.0
+      failure_rate: 0.05
+      max_batch: 512
+    - speed_factor: 0.7
+      failure_rate: 0.10
+      max_batch: 256
+    - speed_factor: 0.5
+      failure_rate: 0.15
+      max_batch: 128
+    - speed_factor: 0.3
+      failure_rate: 0.20
+      max_batch: 128
+    - speed_factor: 0.2
+      failure_rate: 0.10
+      max_batch: 64
+
+churn:
+  enabled: true
+  kill_interval_s: 30
+  kill_probability: 0.3
+
+trainer:
+  total_timesteps: 50000
+  checkpoint_interval: 5

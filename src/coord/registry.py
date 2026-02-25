@@ -66,10 +66,12 @@ class WorkerRegistry:
     def mark_busy(self, worker_id: str) -> None:
         if worker_id in self._workers:
             self._workers[worker_id].status = WorkerStatus.BUSY
+            self._workers[worker_id].last_heartbeat = time.monotonic()
 
     def mark_idle(self, worker_id: str) -> None:
         if worker_id in self._workers:
             self._workers[worker_id].status = WorkerStatus.IDLE
+            self._workers[worker_id].last_heartbeat = time.monotonic()
 
     def get_healthy(self) -> list[WorkerRecord]:
         return [

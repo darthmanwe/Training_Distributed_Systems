@@ -179,6 +179,8 @@ def _churn_kill(config: AppConfig, workers: list[Any], coordinator: Any) -> list
         wid = ray.get(victim.ping.remote(), timeout=2)
         logger.warning(f"CHURN: killing {wid}")
         ray.kill(victim)
+        with contextlib.suppress(Exception):
+            ray.get(coordinator.mark_worker_dead.remote(wid))
     except Exception:
         pass
 
@@ -257,7 +259,7 @@ def run_training(config: AppConfig, resume_path: str | None = None) -> None:
         # Churn simulation
         if config.churn.enabled and (time.time() - last_churn_time) > config.churn.kill_interval_s:
             workers = _churn_kill(config, workers, coordinator)
-            workers = _replace_dead_workers(config, workers, workers)
+            workers = _replace_dead_workers(config, coordinator, workers)
             last_churn_time = time.time()
 
         # Get rollout assignments (with backpressure)
@@ -278,7 +280,7 @@ def run_training(config: AppConfig, resume_path: str | None = None) -> None:
 
         if not pending_refs:
             time.sleep(0.1)
-            workers = _replace_dead_workers(config, workers, workers)
+            workers = _replace_dead_workers(config, coordinator, workers)
             # Re-broadcast weights to any new workers
             for w in workers:
                 with contextlib.suppress(Exception):
@@ -298,10 +300,17 @@ def run_training(config: AppConfig, resume_path: str | None = None) -> None:
                 except Exception as e:
                     logger.warning(f"Rollout from {wid} failed: {e}")
                     with contextlib.suppress(Exception):
-                        ray.get(coordinator.report_rollout_complete.remote(wid))
+                        ray.get(coordinator.mark_worker_dead.remote(wid))
 
             if batch_collector.is_ready():
                 break
+
+        # Replace any workers that died during collection
+        workers = _replace_dead_workers(config, coordinator, workers)
+        if workers:
+            for w in workers:
+                with contextlib.suppress(Exception):
+                    w.set_policy.remote(policy_weights, policy_version)
 
         # If not enough data yet, continue collecting
         if not batch_collector.is_ready():

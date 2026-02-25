@@ -116,6 +116,44 @@ Override any config value from CLI:
 python scripts/run_local.py --config configs/base.yaml trainer.lr=1e-3 seed=123 workers.num_workers=8
 ```
 
+## Benchmarks
+
+Three training scenarios validated on CPU (Windows 11, PyTorch 2.10, seed=42):
+
+| Scenario | Environment | Workers | Peak Reward | Final Reward | Wall Time |
+|----------|------------|---------|-------------|--------------|-----------|
+| **Stable** | CartPole-v1 | 3 | **500.0** (max) | 492.9 +/- 21.3 | ~37s |
+| **Heterogeneous** | JobScheduling | 3 (varied speed) | **0.0** (optimal) | 0.0 +/- 0.0 | ~58s |
+| **Churn** | CartPole-v1 | 4 (with kills) | 437.9 | 375.1 +/- 98.2 | ~57s |
+
+### Training Curves
+
+![Reward curves across all scenarios](experiments/plots/reward_curves.png)
+
+**CartPole (stable):** Solved to maximum score (500) by step 40, maintained 490+ through 98 training steps.
+
+**Scheduling (heterogeneous workers):** Agent learns optimal job-to-worker assignment, converging from -11.9 to 0.0 reward. Workers run at 1.0x, 0.8x, and 0.6x speed.
+
+**CartPole (churn):** With random worker kills every ~10s and 2-5% failure rates, training still reaches 375+ reward. Workers are automatically detected as dead, replaced, and re-integrated.
+
+### CartPole Training Diagnostics
+
+![CartPole diagnostics showing reward, losses, entropy, KL, and LR](experiments/plots/cartpole_diagnostics.png)
+
+### Fault Tolerance Under Churn
+
+![Churn analysis: worker count, reward, stable vs churn comparison](experiments/plots/churn_analysis.png)
+
+Worker count grows from 4 to 12 as replacements accumulate. Despite disruption, training completes with 76% of stable performance -- graceful degradation, not failure.
+
+### Scheduling Environment Convergence
+
+![Scheduling convergence from random to optimal assignment](experiments/plots/scheduling_convergence.png)
+
+Full performance analysis: [`tests/PERFORMANCE_REPORT.md`](tests/PERFORMANCE_REPORT.md)
+
+---
+
 ## Fault tolerance model
 
 - Workers can fail mid-rollout (simulated via `failure_rate` config)

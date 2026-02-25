@@ -61,7 +61,11 @@ class Coordinator:
         return True
 
     def report_rollout_complete(self, worker_id: str) -> None:
+        self._registry.heartbeat(worker_id)
         self._registry.mark_idle(worker_id)
+
+    def mark_worker_dead(self, worker_id: str) -> None:
+        self._registry.mark_dead(worker_id)
 
     def update_policy(self, weights: dict[str, Any], version: int) -> None:
         self._current_weights = weights

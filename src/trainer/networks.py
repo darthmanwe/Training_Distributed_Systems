@@ -53,7 +53,8 @@ class PolicyValueNetwork(nn.Module):
         return Categorical(logits=logits), value
 
     def get_value(self, obs: torch.Tensor) -> torch.Tensor:
-        return self.critic(obs).squeeze(-1)
+        result: torch.Tensor = self.critic(obs).squeeze(-1)
+        return result
 
     def get_action_and_value(
         self, obs: torch.Tensor, action: torch.Tensor | None = None

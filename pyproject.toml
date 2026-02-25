@@ -28,7 +28,8 @@ dependencies = [
 [project.optional-dependencies]
 wandb = ["wandb>=0.16"]
 mlflow = ["mlflow>=2.10"]
-all = ["wandb>=0.16", "mlflow>=2.10"]
+report = ["matplotlib>=3.8"]
+all = ["wandb>=0.16", "mlflow>=2.10", "matplotlib>=3.8"]
 dev = [
     "ruff>=0.4",
     "mypy>=1.8",
@@ -36,6 +37,7 @@ dev = [
     "pytest-asyncio>=0.23",
     "pytest-timeout>=2.2",
     "pre-commit>=3.6",
+    "matplotlib>=3.8",
 ]
 
 [tool.hatch.build.targets.wheel]

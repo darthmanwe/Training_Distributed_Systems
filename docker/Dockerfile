@@ -4,10 +4,12 @@ RUN pip install --no-cache-dir uv
 
 WORKDIR /app
 
-COPY pyproject.toml ./
-RUN uv pip install --system -e ".[dev]"
+COPY pyproject.toml README.md ./
+COPY src/ src/
+COPY scripts/ scripts/
+COPY configs/ configs/
 
-COPY . .
+RUN uv pip install --system -e "."
 
 EXPOSE 8000
 

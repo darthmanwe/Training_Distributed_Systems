@@ -55,7 +55,8 @@ class CheckpointManager:
             raise CheckpointCorruptionError(str(path), f"missing keys: {missing}")
 
         logger.info("checkpoint.loaded", extra={"path": str(path), "step": state["global_step"]})
-        return state
+        result: dict[str, Any] = state
+        return result
 
     def find_latest(self) -> Path | None:
         """Find the most recent checkpoint by step number."""

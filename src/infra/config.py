@@ -138,4 +138,4 @@ def load_config(
 
     raw = OmegaConf.to_container(base, resolve=True)
     assert isinstance(raw, dict)
-    return AppConfig(**raw)
+    return AppConfig(**raw)  # type: ignore[arg-type]

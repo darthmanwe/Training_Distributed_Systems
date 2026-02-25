@@ -19,9 +19,8 @@ env/
 *.swp
 *.swo
 
-# Project outputs
+# Project outputs (training artifacts)
 outputs/
-experiments/plots/
 
 # Tool caches
 .mypy_cache/
